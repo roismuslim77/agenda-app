@@ -1,14 +1,14 @@
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 
 import HomeScreen from '../../home/screens';
-import CartScreen from '../../cart/screen';
+import AgendaScreen from '../../agenda/screen';
 
 const RootNav = createStackNavigator({
     Home: {
         screen: HomeScreen
     },
-    Cart: {
-        screen: CartScreen
+    Agenda: {
+        screen: AgendaScreen
     }
 },{
     initialRouteName: 'Home',

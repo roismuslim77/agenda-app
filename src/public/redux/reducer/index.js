@@ -1,11 +1,9 @@
 import {combineReducers} from 'redux';
 
-import getProducts from './product';
-import getOrders from './order';
+import getDate from './date';
 
 const indexReducer = combineReducers({
-    getProducts,
-    getOrders
+    getDate
 });
 
 export default indexReducer;
