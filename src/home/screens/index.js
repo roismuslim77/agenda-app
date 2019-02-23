@@ -20,8 +20,9 @@ class CalendarsScreen extends Component {
         textTitle: '', 
         textDetails: '',
         selected: '',
+        btnText: 'Save',
         marked:{}
-        // marked: {'2019-02-25':{marked:true},'2019-02-28':{marked:true}}
+        //marked: {'2019-02-25':{marked:true},'2019-02-28':{marked:true}}
     };
     this.onDayPress = this.onDayPress.bind(this);
   }
@@ -50,16 +51,23 @@ class CalendarsScreen extends Component {
           markedDates={this.state.marked}
           // disabledByDefault={true}
           onDayPress={(date) =>{
+            this.onDayPress(date)
                 this._toggleModal()
-                this.onDayPress(date)
             }}
           hideArrows={false}
+          onDayLongPress={(date)=>{
+            this.onDayLongPress(date)
+          }}
         />
     <Modal 
     isVisible={this.state.isModalVisible}
     backdropColor="transparent"
     >
-      <View style={{ backgroundColor: 'skyblue', borderRadius: 10, height: 400}}>
+      <View style={{marginTop: '2%', backgroundColor: 'skyblue', borderRadius: 10, height: '80%'}}>
+        <View style={{flex: 3}}>
+        <Text style={{ borderBottomColor: 'white', borderBottomWidth: 1, paddingBottom:'3%', marginTop: '5%', marginLeft: '2%', marginRight: '50%'}}
+            >{this.state.selected}
+        </Text>
         <TextInput
             style={{height: 40, borderBottomColor: 'white', borderBottomWidth: 1, marginTop: '3%', marginLeft: '2%', marginRight: '2%'}}
             onChangeText={(textTitle) => this.setState({textTitle})}
@@ -73,9 +81,10 @@ class CalendarsScreen extends Component {
             multiline={true}
             placeholder="Details"
         />
-        <Text style={{ borderBottomColor: 'white', borderBottomWidth: 1, paddingBottom:'3%', marginTop: '5%', marginLeft: '2%', marginRight: '50%'}}
-            >{this.state.selected}</Text>
-        <Button primary onPress={()=>this.sendData(this.state.selected)}><Text> Save </Text></Button>
+        </View>
+        <View style={{flex: 1, flexDirection: 'row', marginLeft: '-0.3%', marginTop: '2%', marginBottom: '2%'}}><Button style={{width: 100, justifyContent: 'center', backgroundColor: 'white', marginRight: '1%'}} onPress={()=>this.sendData(this.state.selected)}><Text> {this.state.btnText} </Text></Button>
+        <Button style={{width: 100, marginLeft: '1%',justifyContent: 'center', backgroundColor: 'white'}} onPress={this._toggleModal}><Text> Close </Text></Button>
+        </View>
       </View>
     </Modal>
   </View>
@@ -90,12 +99,22 @@ class CalendarsScreen extends Component {
             [this.state.selected]:{marked:true,}
         }
     })
+    this.setState({
+      textTitle: '', btnText: 'Save'
+    })
     this.setState({ isModalVisible: !this.state.isModalVisible })
   }
-  onDayPress(day) {
+  async onDayPress(day) {
     this.setState({
       selected: day.dateString
-    });
+    })
+    await this.props.getDate.detail.map((item)=>{
+      return item.date == day.dateString ? 
+       this.setState({textTitle: item.details[0], btnText: 'Update'})  :''
+    })
+  }
+  onDayLongPress(day){
+    alert('long')
   }
 }
 const mapStateToProps = (state) => {
@@ -106,7 +125,7 @@ export default connect(mapStateToProps)(CalendarsScreen)
 const styles = StyleSheet.create({
   calendar: {
     borderTopWidth: 1,
-    paddingTop: 5,
+    paddingTop: 2,
     borderBottomWidth: 1,
     borderColor: '#eee',
     height: '100%'
